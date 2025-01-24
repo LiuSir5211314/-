@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block style %}
+    <link rel="stylesheet" href="../static/layui/css/layui.css"/>
+    <script src="../static/js/jquery.min.js"></script>
+    <script src="../static/layui/layui.js"></script>
+<style>
+p{
+    font-size:20px;
+    padding: 8px;
+}
+</style>
+{% endblock %}
+{% block content %}
+    <div class="contents" style="background-color: #ffffff">
+        <div class="grid_wrapper" style="padding: 5%">
+
+            <div class="g_6 contents_header">
+                <h3 class="i_16_dashboard tab_label">服务器&操作系统扫描</h3>
+                <div><span class="label">Server & Operating System Scan</span></div>
+            </div>
+
+            <div class="g_12 separator"><span></span></div>
+            <div style="clear: both"></div>
+            <div style="margin-left: 20%">
+                <button type="button" class="layui-btn" id="classify" style="margin: 20px 20%">开始扫描操作系统</button>
+            </div>
+             <div style="margin-left: 20%">
+                <button type="button" class="layui-btn" id="predict" style="margin: 20px 20%">开始扫描服务器</button>
+            </div>
+            <div style="padding: 40px;">
+            <div id="info1"><p>扫描结果： Server: WSGIServer/0.2 CPython/3.6.8  <br></br>可能存在SQL注入、CSRF攻击、存在任意文件下载，删除，写入，覆盖风险</p></div>
+             <div id="info2"></div>
+             <div id="info3"></div>
+                </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    <script>
+        layui.use(['layer', 'form'], function () {
+            var layer = layui.layer
+            $(function () {
+                $("#classify").click(function () {
+                          $('#info1').html('')
+                      $('#info2').html('')
+                      $('#info3').html('')
+                    var loading = layer.msg("正在为您扫描端口，请稍后...", {icon: 16, shade: [0.3, "gray"], time: false});
+                    $.ajax({
+                        type: 'POST',
+                        url: "/get_info",
+                        dataType: 'json', //服务端返回json格式的数据
+                        success: function (data) { // 这里的data就是返回的json格式的数据
+                            layer.close(loading)
+                            $('#info1').html(data.system_info)
+                            $('#info2').html(data.cpu_info)
+                            $('#info3').html(data.memory_information)
+
+                        },
+                        error: function (xhr, type) {
+                            layer.msg('操作系统扫描失败，请查看后台', {icon: 5})
+
+                        }
+                    });
+
+                })
+                 $("#predict").click(function () {
+                     $('#info1').html('')
+                      $('#info2').html('')
+                      $('#info3').html('')
+                    var loading = layer.msg("正在为您扫描服务器，请稍后...", {icon: 16, shade: [0.3, "gray"], time: false});
+                    $.ajax({
+                        type: 'POST',
+                        url: "/get_server",
+                        dataType: 'json', //服务端返回json格式的数据
+                        success: function (data) { // 这里的data就是返回的json格式的数据
+                            layer.close(loading)
+                            $('#info1').text("扫描结果："+data.result)
+
+
+                        },
+                        error: function (xhr, type) {
+                            layer.msg('服务器扫描失败，请查看后台', {icon: 5})
+
+                        }
+                    });
+
+                })
+            })
+        })
+    </script>
+{% endblock %}

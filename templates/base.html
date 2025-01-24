@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<head>
+    <title>Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../static/dist/css/bootstrap.css">
+    <link href="../static/dist/css/style.css" rel='stylesheet' type='text/css'/>
+    <link rel="stylesheet" href="../static/dist/css/font.css" type="text/css"/>
+    <link href="../static/dist/css/font-awesome.css" rel="stylesheet">
+    <script src="../static/dist/js/jquery1.9.1.min.js"></script>
+    <script src="../static/dist/js/modernizr.js"></script>
+    <script src="../static/dist/js/screenfull.js"></script>
+    <script src="../static/dist/js/proton.js"></script>
+    <script>
+        $(function () {
+            $('#supported').text('Supported/allowed: ' + !!screenfull.enabled);
+
+            if (!screenfull.enabled) {
+                return false;
+            }
+            $('#toggle').click(function () {
+                screenfull.toggle($('#container')[0]);
+            });
+        });
+    </script>
+    {% block style %}
+        {% endblock %}
+    <script src="../static/dist/js/bootstrap.js"></script>
+    <script src="../static/dist/js/raphael-min.js"></script>
+    <script src="../static/dist/js/morris.js"></script>
+    <link rel="stylesheet" href="../static/dist/css/morris.css">
+
+</head>
+<body class="dashboard-page">
+<nav class="main-menu">
+    <ul>
+        <li id="index"><a href="/index"><i class="fa fa-home nav_icon"></i><span class="nav-text">首页</span></a></li>
+        <li id="port_analysis"><a href="/port_analysis"><i class="fa fa-cogs" aria-hidden="true"></i><span class="nav-text">端口扫描</span></a></li>
+        <li id="scans"><a href="/scans"><i class="icon-lemon nav-icon" aria-hidden="true"></i><span class="nav-text">扫描列表</span></a></li>
+        <li id="info"><a href="/info"><i class="icon-list nav-icon"></i><span class="nav-text">操作系统扫描</span></a></li>
+
+        <li id="personal"><a href="/personal"><i class="icon-table nav-icon"></i><span class="nav-text">个人信息</span></a></li>
+        <li id="password"><a href="/user/password"><i class="fa fa-map-marker" aria-hidden="true"></i><span
+                class="nav-text">修改密码</span></a></li>
+        <li id="user"><a href="/user/user"><i class="fa fa-list-ul" aria-hidden="true"></i><span
+                class="nav-text">用户管理</span></a></li>
+    </ul>
+    <ul class="logout">
+        <li><a href="/login_out"><i class="icon-off nav-icon"></i><span class="nav-text">注销登录</span></a></li>
+    </ul>
+</nav>
+<section class="wrapper scrollable">
+    <nav class="user-menu">
+        <a href="javascript:;" class="main-menu-access">
+            <i class="icon-proton-logo"></i>
+            <i class="icon-reorder"></i>
+        </a>
+    </nav>
+    <section class="title-bar">
+        <div class="logo">
+            <h1><a href="/index"><img src="../static/dist/images/logo.png" alt=""/>基于Python的漏洞扫描系统</a></h1>
+        </div>
+        <div class="full-screen">
+            <section class="full-top">
+                <button id="toggle"><i class="fa fa-arrows-alt" aria-hidden="true"></i></button>
+            </section>
+        </div>
+
+        <div class="header-right">
+            <div class="profile_details_left">
+                <div class="profile_details">
+                    <ul>
+                        <li class="dropdown profile_details_drop">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <div class="profile_img">
+                                    <span class="prfil-img"><i class="fa fa-user" aria-hidden="true"></i></span>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu drp-mnu">
+                                <li><a href="/user/password"><i class="fa fa-cog"></i> 修改密码</a></li>
+                                <li><a href="/personal"><i class="fa fa-user"></i> 个人信息</a></li>
+                                <li><a href="/login_out"><i class="fa fa-sign-out"></i> 注销登录</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </section>
+    <div class="main-grid">
+
+{% block content %}
+        {% endblock %}
+
+    </div>
+</section>
+
+
+</body>
+{% block script %}
+        {% endblock %}
+<script>
+    let currentElemt = window.location.pathname;
+    // nav菜单选择
+    if (currentElemt.indexOf('/user/password') > -1) {
+        currentElemt = 'password'
+    } else if (currentElemt.indexOf('/info') > -1) {
+        currentElemt = 'info'
+    } else if (currentElemt.indexOf('/scans') > -1) {
+        currentElemt = 'scans'
+    } else if (currentElemt.indexOf('/personal') > -1) {
+        currentElemt = 'personal'
+    } else if (currentElemt.indexOf('/user/user') > -1) {
+        currentElemt = 'user'
+    } else if (currentElemt.indexOf('/index') > -1) {
+        currentElemt = 'index'
+    } else {
+        currentElemt = 'port_analysis'
+    }
+    $('#' + currentElemt).addClass('active');
+</script>
+</html>

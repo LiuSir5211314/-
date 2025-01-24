@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block style %}
+    <link rel="stylesheet" href="../static/layui/css/layui.css"/>
+    <script src="../static/js/jquery.min.js"></script>
+    <script src="../static/layui/layui.js"></script>
+
+{% endblock %}
+{% block content %}
+    <div class="contents" style="background-color: #ffffff">
+        <div class="grid_wrapper" style="padding: 5%">
+
+            <div class="g_6 contents_header">
+                <h3 class="i_16_dashboard tab_label">端口扫描</h3>
+                <div><span class="label">Port scanning</span></div>
+            </div>
+
+            <div class="g_12 separator"><span></span></div>
+            <div style="clear: both"></div>
+            <div style="margin-left: 20%">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">I  P</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="ip" lay-verify="required" id="ip" placeholder="请输入IP地址" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">端口</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="port" lay-verify="required" id='port' placeholder="请输入端口"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <button type="button" class="layui-btn" id="classify" style="margin: 20px 20%">开始扫描</button>
+            </div>
+            <div>
+                <p id="info1"></p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    <script>
+        layui.use(['layer', 'form'], function () {
+            var layer = layui.layer
+            $(function () {
+                $("#classify").click(function () {
+                    var ip = $("#ip").val();
+                     var port = $("#port").val();
+                    var loading = layer.msg("正在为您扫描端口，请稍后...", {icon: 16, shade: [0.3, "gray"], time: false});
+                    if ("" == ip || undefined == ip) {
+                        layer.msg("IP地址不能为空", {icon: 7});
+                        return
+                    }
+                    if ("" == port || undefined == port) {
+                        layer.msg("端口不能为空", {icon: 7});
+                        return
+                    }
+                    $.ajax({
+                        type: 'POST',
+                        url: "/predict",
+                        dataType: 'json', //服务端返回json格式的数据
+                        data: {'ip': ip,'port':port},
+
+                        success: function (data) { // 这里的data就是返回的json格式的数据
+                            layer.close(loading)
+                            var value = data.result
+                            //$("#name").val('')
+                            layer.confirm(value, {icon: 6, title: '扫描结果'}, function (index) {
+                                layer.close(index)
+                            })
+                            $('#info1').html(data.info)
+                        },
+                        error: function (xhr, type) {
+                            layer.msg('端口扫描失败，请查看后台', {icon: 5})
+
+                        }
+                    });
+
+                })
+            })
+        })
+    </script>
+{% endblock %}

@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+
+{% block style %}
+    <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.3.3/dist/echarts.min.js"></script>
+
+{% endblock %}
+
+{% block content %}
+       <div class="social grid">
+            <div class="grid-info">
+                <div class="col-md-3 top-comment-grid">
+                    <div class="comments likes">
+                        <div class="comments-icon">
+                            <i class="fa fa-facebook"></i>
+                        </div>
+                        <div class="comments-info likes-info">
+                            <h3>{{ total_user }}</h3>
+                            <a>用户数量</a>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div class="col-md-3 top-comment-grid">
+                    <div class="comments">
+                        <div class="comments-icon">
+                            <i class="fa fa-comments"></i>
+                        </div>
+                        <div class="comments-info">
+                            <h3>{{ total_port }}</h3>
+                            <a>扫描的端口数量</a>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div class="col-md-3 top-comment-grid">
+                    <div class="comments tweets">
+                        <div class="comments-icon">
+                            <i class="fa fa-twitter"></i>
+                        </div>
+                        <div class="comments-info tweets-info">
+                            <h3>{{ year }}</h3>
+                            <a>当前年份</a>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div class="col-md-3 top-comment-grid">
+                    <div class="comments views">
+                        <div class="comments-icon">
+                            <i class="fa fa-eye"></i>
+                        </div>
+                        <div class="comments-info views-info">
+                            <h3>{{ month }}</h3>
+                            <a href="#">当前月份</a>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <div class="agile-grids">
+            <div class="col-md-4 charts-right">
+                <!-- area-chart -->
+                <div class="area-grids">
+                    <div class="area-grids-heading">
+                        <h3>系统内存使用情况(单位：GB)</h3>
+                    </div>
+                    <div id="main" style="width: 100%;height: 300px"></div>
+                </div>
+            </div>
+            <div class="col-md-8 chart-left">
+                <div class="agile-Updating-grids">
+                    <div class="area-grids-heading">
+                        <h3>近七天端口扫描情况</h3>
+                    </div>
+                    <div id="lineChart" style="width: 100%;height: 300px"></div>
+                </div>
+                <!-- //updating-data -->
+            </div>
+            <div class="clearfix"></div>
+        </div>
+{% endblock %}
+
+
+{% block script %}
+    <script>
+    var chartDom = document.getElementById('main');
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+  tooltip: {
+    trigger: 'item'
+  },
+  legend: {
+    top: '5%',
+    left: 'center'
+  },
+  series: [
+    {
+      name: '系统内存',
+      type: 'pie',
+      radius: ['40%', '70%'],
+      avoidLabelOverlap: false,
+      itemStyle: {
+        borderRadius: 10,
+        borderColor: '#fff',
+        borderWidth: 2
+      },
+      label: {
+        show: false,
+        position: 'center'
+      },
+      emphasis: {
+        label: {
+          show: true,
+          fontSize: '40',
+          fontWeight: 'bold'
+        }
+      },
+      labelLine: {
+        show: false
+      },
+      data: [
+        { value: {{ free }}, name: '可用内存' },
+        { value: {{ used }}, name: '已用内存' },
+
+      ]
+    }
+  ]
+};
+
+option && myChart.setOption(option);
+    </script>
+        <script>
+        var chartDom2 = document.getElementById('lineChart');
+        var myChart2 = echarts.init(chartDom2);
+        var position =
+        {{ list_week_day | safe }}
+        var xueli_count =
+        {{ count | safe }}
+        var option2;
+        option2 = {
+
+            tooltip: {
+                show: true
+            },
+            legend: {
+                data: ['数量']
+            },
+            xAxis: {
+                name: '日期',
+                type: 'category',
+                data: position,
+                axisLabel: {
+                    interval: 0,
+                    rotate: 40,
+                }
+            },
+
+
+            yAxis: {
+                name: '数量',
+                type: 'value'
+            },
+            series: [
+                {
+                    name: '近七天数量',
+                    data: xueli_count,
+                    type: 'bar',
+                    showBackground: true,
+                    backgroundStyle: {
+                        color: 'rgba(180, 180, 180, 0.2)'
+                    },
+                    itemStyle: {
+
+                        normal: {
+                            color: 'rgb(84,112,198)',
+
+                            label: {
+                                show: true,  //开启显示
+                                position: 'top',  //在上方显示
+                                textStyle: {  //数值样式
+                                    color: 'black',
+                                    fontSize: 16
+                                }
+                            }
+                        }
+                    },
+                }
+            ]
+        };
+
+        option2 && myChart2.setOption(option2);
+    </script>
+{% endblock %}
